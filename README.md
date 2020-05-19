@@ -33,3 +33,6 @@ A sample app has already been created for you using `flutter create gmailapp`.
 - When done, commit your work locally and push it to your origin (forked repository).
 - Make a pull request to our repository, mentioning all the features that you have implemented in the app.
 - Let us review your pull request.
+
+## Deadline
+You'll have a week to complete this task. Hence, the deadline of this task is Tuesday May 26th at 11:59 PM.
