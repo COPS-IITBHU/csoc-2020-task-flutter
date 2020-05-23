@@ -48,35 +48,28 @@ class _MailListState extends State<MailList> {
                           return ChangeNotifierProvider.value(
                               value: snapshot.data[index],
                               child: Dismissible(
-                                background: Container(
+                                secondaryBackground:Container(alignment: Alignment.centerRight,
                                   color: Colors.red,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Container(
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        10, 10, 10.0, 10),
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
+
+                                  ),
+                                ) ,
+                                background: Container(alignment: Alignment.centerLeft,
                                         color: Colors.red,
                                         child: Padding(
                                           padding: EdgeInsets.fromLTRB(
-                                              10, 10, 0, 10.0),
+                                              10, 10, 10.0, 10),
                                           child: Icon(
                                             Icons.delete,
                                             color: Colors.white,
                                           ),
-                                        ),
-                                      ),
-                                      Container(
-                                        color: Colors.red,
-                                        child: Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0.0, 10, 10.0, 10),
-                                          child: Icon(
-                                            Icons.delete,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+
                                   ),
                                 ),
                                 key: UniqueKey(),
