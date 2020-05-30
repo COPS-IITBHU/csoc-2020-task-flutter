@@ -77,10 +77,9 @@ class DataSearch extends SearchDelegate<String> {
 
      if(list.length==0)
      {
-        
          return Scaffold( 
               
-              body : Image.asset('assets/noresults.jpg'),
+              body : Image.asset('assets/no_result.gif'),
              );
      }
      

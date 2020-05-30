@@ -36,16 +36,17 @@ class _MailDetailState extends State<MailDetail> {
       cc = mail.cc;
       bcc = mail.bcc;
       to = mail.to;
-      if(mail.cc==null)
+      if(mail.cc==null||mail.cc.isEmpty)
        {
          _showCc = false;
            cc  = "fake";
        }
-       if(mail.bcc==null)
+       if(mail.bcc==null||mail.bcc.isEmpty)
        {
          _showBcc = false;
           bcc  = "fake";
        }
+
     });
     return Scaffold(
       appBar: AppBar(
@@ -77,19 +78,20 @@ class _MailDetailState extends State<MailDetail> {
                 child:ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Colors.purple,
-                  child: Icon(Icons.mail),
+                  child: Text(mail.from[0],style: TextStyle(color: Colors.yellow),
+                  ),
                 ),
-                title: Text('Madhava Dasari',
+                title: Text('Madhava   Dasari',
                 style: TextStyle(fontSize: 20),),
                 subtitle: Text('to: $to'),
                 trailing: IconButton(
-                  icon: _isVisible ?  Icon(Icons.keyboard_arrow_down): Icon(Icons.keyboard_arrow_up),
+                  icon: _isVisible ?  Icon(Icons.keyboard_arrow_down,size: 30,): Icon(Icons.keyboard_arrow_up,size:30),
                   onPressed: (){
                     show();
                   },
                   color: Colors.purple,
                 ),
-              )),
+              )), 
             ),
             Visibility(
               visible: _isVisible,
@@ -127,6 +129,7 @@ class _MailDetailState extends State<MailDetail> {
                        ),
                        Visibility(
                          visible: _showBcc,
+                         
                          child:  ListTile(
                          leading: Text('Bcc :'),
                          title: Text(bcc),
@@ -139,7 +142,11 @@ class _MailDetailState extends State<MailDetail> {
             
             Padding(
               padding: EdgeInsets.all(15),
-              child: Text(mail.content),
+              child: Text(mail.content,
+              style:TextStyle(
+                   fontSize: 20,
+              ) 
+              ),
             ),
           ],
         ),
@@ -149,8 +156,11 @@ class _MailDetailState extends State<MailDetail> {
 
   void showAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-      title: Text('Confrim : '),
-      content: Text('Are You Sure to Delete This Mail ? '),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      content : Image.asset('assets/delete.gif',
+              width: 450, height: 300, ),
       actions: <Widget>[
         FlatButton(
             onPressed: () {
