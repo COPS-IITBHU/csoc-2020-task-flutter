@@ -64,7 +64,7 @@ class _EmailDetailState extends State<EmailDetail> {
                     Container(
                       width: 320.0,
                       child: Text(
-                        _mail.subject,
+                        _mail.subject ?? '',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 30.0,
@@ -208,7 +208,7 @@ class _EmailDetailState extends State<EmailDetail> {
                 width: double.infinity,
                 padding: EdgeInsets.all(15.0),
                 child: Text(
-                  _mail.body,
+                  _mail.body ?? '',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w300,

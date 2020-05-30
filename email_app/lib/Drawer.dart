@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'database/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SideNav extends StatelessWidget {
@@ -53,47 +54,45 @@ class _DrawerHeader extends State<DrawerHeader> {
   @override
   void initState() {
     super.initState();
-    loadImage();
+    loadProfile();
   }
 
-  File image;
-  String _imagePath;
+  void loadProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Profile _myProfile = await helper.getProfile();
+    setState(() {
+      myProfile = _myProfile;
+      _isLoading = false;
+    });
+  }
+
+  SharedPreference helper = SharedPreference();
+  Profile myProfile = Profile();
+  bool _isLoading = false;
+
   Future getImage(bool isCamera) async {
     File _image;
     isCamera
-        // ignore: deprecated_member_use
         ? _image = await ImagePicker.pickImage(source: ImageSource.camera)
-        // ignore: deprecated_member_use
         : _image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (_image != null) {
       setState(() {
-        image = _image;
-        saveImage(image.path);
+        myProfile.imagePath = _image.path;
+        helper.setProfile(myProfile);
       });
     }
   }
 
-  saveImage(path) async {
-    SharedPreferences saveImage = await SharedPreferences.getInstance();
-    saveImage.setString('imagepath', path);
-  }
-
-  void loadImage() async {
-    SharedPreferences saveImage = await SharedPreferences.getInstance();
-    setState(() {
-      _imagePath = saveImage.get('imagepath');
-    });
-  }
-
-  CircleAvatar profileImage() {
-    if (image != null) {
+  Widget profileImage() {
+    if (_isLoading == true) {
+      return CircularProgressIndicator();
+    } else if (myProfile.imagePath != null &&
+        File(myProfile.imagePath).existsSync()) {
       return CircleAvatar(
-        backgroundImage: FileImage(image),
-      );
-    } else if (_imagePath != null && File(_imagePath).existsSync()) {
-      return CircleAvatar(
-        backgroundImage: FileImage(File(_imagePath)),
+        backgroundImage: FileImage(File(myProfile.imagePath)),
       );
     }
     return CircleAvatar(
@@ -107,8 +106,8 @@ class _DrawerHeader extends State<DrawerHeader> {
   @override
   Widget build(BuildContext context) {
     return UserAccountsDrawerHeader(
-      accountName: new Text("Lakshya Singh"),
-      accountEmail: Text("lakshay.singh1108@gmail.com"),
+      accountName: new Text(myProfile.name),
+      accountEmail: Text(myProfile.emailId),
       currentAccountPicture: profileImage(),
       otherAccountsPictures: <Widget>[
         IconButton(
