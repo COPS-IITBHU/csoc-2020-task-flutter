@@ -61,7 +61,9 @@ class _DrawerHeader extends State<DrawerHeader> {
   Future getImage(bool isCamera) async {
     File _image;
     isCamera
+        // ignore: deprecated_member_use
         ? _image = await ImagePicker.pickImage(source: ImageSource.camera)
+        // ignore: deprecated_member_use
         : _image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (_image != null) {

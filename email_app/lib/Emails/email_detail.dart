@@ -5,6 +5,7 @@ import '../widgets/expansiontile.dart';
 
 class EmailDetail extends StatefulWidget {
   EmailDetail(this._mail);
+
   final Mail _mail;
 
   @override
@@ -13,9 +14,11 @@ class EmailDetail extends StatefulWidget {
 
 class _EmailDetailState extends State<EmailDetail> {
   _EmailDetailState(this._mail);
+
   Mail _mail;
   bool update = false;
   DatabaseHelper helper = DatabaseHelper();
+  bool expaned = false;
 
   @override
   Widget build(BuildContext context) {
@@ -89,74 +92,114 @@ class _EmailDetailState extends State<EmailDetail> {
                           _mail.recepient,
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
-                        subtitle: Text("to students.all"),
+                        subtitle: Row(
+                          children: <Widget>[
+                            Text("to students.all"),
+                            IconButton(
+                                icon: Icon(Icons.arrow_drop_down),
+                                onPressed: () {
+                                  setState(() {
+                                    expaned = !expaned;
+                                  });
+                                })
+                          ],
+                        ),
                       ),
                     ),
                     Icon(Icons.reply),
                   ],
                 ),
               ),
-              Container(
-                height: 150.0,
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 15.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  elevation: 0.5,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text.rich(
-                          TextSpan(
-                            text: "From   ",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 18.0,
+              ExpandedSection(
+                expand: expaned,
+                child: Container(
+                  width: double.infinity,
+                  height: 145.0,
+                  margin: EdgeInsets.all(10.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 0.8,
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text.rich(
+                            TextSpan(
+                              text: "From   ",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15.0,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: _mail.recepient,
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                  ),
+                                )
+                              ],
                             ),
-                            children: [
-                              TextSpan(
-                                text: _mail.recepient,
+                          ),
+                          Text.rich(
+                            TextSpan(
+                                text: "To       ",
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400),
-                              )
+                                  color: Colors.grey,
+                                  fontSize: 15.0,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: "students.all@itbhu.ac.in",
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    ),
+                                  )
+                                ]),
+                          ),
+                          Text.rich(
+                            TextSpan(
+                                text: "Date   ",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 15.0,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: _mail.date,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    ),
+                                  )
+                                ]),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.lock_outline,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 23.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text("Standard encryption (TLS)."),
+                                  Text(
+                                    "View Security Details",
+                                    style: TextStyle(
+                                        color: Colors.lightBlueAccent),
+                                  )
+                                ],
+                              ),
                             ],
                           ),
-                        ),
-                        Text.rich(
-                          TextSpan(
-                              text: "To   ",
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 16.0),
-                              children: [
-                                TextSpan(
-                                  text: "students.all@itbhu.ac.in",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400),
-                                )
-                              ]),
-                        ),
-                        Text.rich(
-                          TextSpan(
-                              text: "Date   ",
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 18.0),
-                              children: [
-                                TextSpan(
-                                  text: _mail.date,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400),
-                                )
-                              ]),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -166,7 +209,11 @@ class _EmailDetailState extends State<EmailDetail> {
                 padding: EdgeInsets.all(15.0),
                 child: Text(
                   _mail.body,
-                  style: TextStyle(fontSize: 16.0),
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.black87,
+                  ),
                 ),
               )
             ],
