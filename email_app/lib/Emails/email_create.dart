@@ -17,8 +17,10 @@ class _EmailCreate extends State<EmailCreate> {
   final _formKey = GlobalKey<FormState>();
   Mail _add = Mail(recepient: null, date: null);
 
-  dynamic formValidate() async {
+  void formValidate() async {
     if (_formKey.currentState.validate()) {
+      _add.body ??= ' ';
+      _add.subject ??= ' ';
       _add.date = DateFormat.yMMMd().format(DateTime.now());
       _add.favourite = 0;
       await helper.insertMail(_add);
@@ -42,7 +44,11 @@ class _EmailCreate extends State<EmailCreate> {
               child: Center(
                 child: IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: () => formValidate(),
+                  onPressed: () {
+                    setState(() {
+                      formValidate();
+                    });
+                  },
                 ),
               ),
             ),

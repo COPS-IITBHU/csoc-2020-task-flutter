@@ -1,10 +1,53 @@
 import 'package:flutter/material.dart';
 import './models/email.dart';
 import './Emails/email_detail.dart';
+import 'database/shared_preferences.dart';
 
 class CustomSearchDelegate extends SearchDelegate<String> {
   final List<Mail> _mails;
   CustomSearchDelegate(this._mails);
+
+  SharedPreference preference = SharedPreference();
+
+  Widget loadsuggestions() {
+    return FutureBuilder(
+      builder: (context, projectSnap) {
+        if (projectSnap.connectionState == ConnectionState.none &&
+            projectSnap.hasData == null) {
+          return CircularProgressIndicator();
+        } else if (projectSnap.data == null) return Container();
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            String data = projectSnap.data[index];
+            return Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+              padding: EdgeInsets.all(10.0),
+              color: Colors.grey[200],
+              child: GestureDetector(
+                onTap: () {
+                  query = data;
+                },
+                child: Text(
+                  data,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+              ),
+            );
+          },
+          itemCount: projectSnap.data.length,
+        );
+      },
+      future: getdata(),
+    );
+  }
+
+  Future<List<String>> getdata() async {
+    return await preference.getSuggestions();
+  }
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -72,7 +115,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
                 e.body.contains(query) ||
                 e.recepient.contains(query))
             .toList();
-
+    if (suggestions.isNotEmpty) preference.setSuggestions(query);
     return suggestions.isEmpty
         ? Center(
             child: Column(
@@ -133,6 +176,6 @@ class CustomSearchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Container();
+    return loadsuggestions();
   }
 }

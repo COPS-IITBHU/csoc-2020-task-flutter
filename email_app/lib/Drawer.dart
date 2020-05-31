@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'database/shared_preferences.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SideNav extends StatelessWidget {
   @override
@@ -87,15 +86,14 @@ class _DrawerHeader extends State<DrawerHeader> {
   }
 
   Widget profileImage() {
-    if (_isLoading == true) {
-      return CircularProgressIndicator();
-    } else if (myProfile.imagePath != null &&
-        File(myProfile.imagePath).existsSync()) {
+    if (myProfile.imagePath != null && File(myProfile.imagePath).existsSync()) {
       return CircleAvatar(
+        radius: 25.0,
         backgroundImage: FileImage(File(myProfile.imagePath)),
       );
     }
     return CircleAvatar(
+      radius: 25.0,
       child: FlutterLogo(
         size: 50.0,
       ),
@@ -105,24 +103,26 @@ class _DrawerHeader extends State<DrawerHeader> {
 
   @override
   Widget build(BuildContext context) {
-    return UserAccountsDrawerHeader(
-      accountName: new Text(myProfile.name),
-      accountEmail: Text(myProfile.emailId),
-      currentAccountPicture: profileImage(),
-      otherAccountsPictures: <Widget>[
-        IconButton(
-          icon: Icon(Icons.camera),
-          onPressed: () {
-            getImage(true);
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.image),
-          onPressed: () {
-            getImage(false);
-          },
-        ),
-      ],
-    );
+    return _isLoading
+        ? CircularProgressIndicator()
+        : UserAccountsDrawerHeader(
+            accountName: new Text(myProfile.name),
+            accountEmail: Text(myProfile.emailId),
+            currentAccountPicture: profileImage(),
+            otherAccountsPictures: <Widget>[
+              IconButton(
+                icon: Icon(Icons.camera),
+                onPressed: () {
+                  getImage(true);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.image),
+                onPressed: () {
+                  getImage(false);
+                },
+              ),
+            ],
+          );
   }
 }

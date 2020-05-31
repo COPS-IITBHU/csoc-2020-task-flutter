@@ -36,7 +36,19 @@ class SharedPreference {
     _local.setString('imagePath', myProfile.imagePath);
     _local.setString('name', myProfile.name);
     _local.setString('emailId', myProfile.emailId);
-    print(myProfile.imagePath);
+  }
+
+  void setSuggestions(String query) async {
+    SharedPreferences _local = await this.preferences;
+    List<String> suggestions =
+        _local.getStringList('suggest').toSet().toList() ?? List<String>();
+    suggestions.add(query);
+    _local.setStringList('suggest', suggestions);
+  }
+
+  Future<List<String>> getSuggestions() async {
+    SharedPreferences _local = await this.preferences;
+    return _local.getStringList('suggest').toSet().toList();
   }
 }
 
