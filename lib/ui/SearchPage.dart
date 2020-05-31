@@ -44,7 +44,7 @@ class _SearchPageEmailListState extends State<SearchPageEmailList> {
                     data.toggleFav(data.defaultData[index]),
               );
             }
-            return null;
+            return SizedBox();
           },
           itemCount: data.defaultData.length,
         );
@@ -55,8 +55,10 @@ class _SearchPageEmailListState extends State<SearchPageEmailList> {
 
 bool foundIn(EmailItem item, String text) {
   String txt = text.toLowerCase();
+  print(txt);
   return item.subject.toLowerCase().contains(txt) ||
       item.description.toLowerCase().contains(txt) ||
       item.recEmail.toLowerCase().contains(txt) ||
-      item.recName.toLowerCase().contains(txt);
+      item.recName.toLowerCase().contains(txt) ||
+      item.sender.toLowerCase().contains(txt);
 }
