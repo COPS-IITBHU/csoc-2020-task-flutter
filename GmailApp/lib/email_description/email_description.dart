@@ -36,150 +36,162 @@ class _Description extends State<Description> {
           return null;
         },
         child: Scaffold(
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(60.0),
-              child: AppBar(
-                elevation: 0.0,
-                backgroundColor: Colors.white,
-                leading: IconButton(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.0),
+            child: AppBar(
+              elevation: 0.0,
+              backgroundColor: Colors.white,
+              leading: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    moveback(1);
+                  }),
+              actions: <Widget>[
+                IconButton(
                     icon: Icon(
-                      Icons.arrow_back,
+                      Icons.delete,
                       color: Colors.black,
                     ),
                     onPressed: () {
-                      moveback(1);
+                      _deleteEmail(context, this.email);
+                      moveback(2);
                     }),
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        _deleteEmail(context, this.email);
-                        moveback(2);
-                      }),
-                ],
-              ),
+              ],
             ),
-            body: SingleChildScrollView(
-              child: Container(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Row(
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      width: (MediaQuery.of(context).size.width * 0.85),
+                      padding: EdgeInsets.only(top: 30, left: 30),
+                      child: Text(
+                        this.email.subject,
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.w100),
+                      ),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(right: 20, top: 30),
+                        child: _icon),
+                  ],
+                ),
+                Card(
+                  margin: EdgeInsets.only(top: 25),
+                  elevation: 0,
+                  child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Color(int.parse(this.email.color)),
+                        child: Text(
+                          this.email.subject[0].toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Colors.white),
+                        ),
+                      ),
+                      title: SizedBox(
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: Text(
+                                "Yash Jain",
+                                style: TextStyle(fontSize: 22),
+                              ),
+                            ),
+                            Text(
+                              this.email.date,
+                              style:
+                                  TextStyle(fontSize: 13, color: Colors.grey),
+                            )
+                          ],
+                        ),
+                      ),
+                      trailing: IconButton(
+                          icon: icon,
+                          onPressed: () {
+                            setState(() {
+                              show();
+                            });
+                          })),
+                ),
+                Details(
+                    email.sender, email.reciever, email.date, width, height),
+                Container(
+                  margin: EdgeInsets.only(top: 60, right: 20, left: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                          child: Container(
+                        margin: EdgeInsets.only(bottom: 40),
+                        child: Text(
+                          this.email.compose,
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 70, bottom: 50),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Container(
-                        width: (MediaQuery.of(context).size.width * 0.85),
-                        padding: EdgeInsets.only(top: 30, left: 30),
-                        child: Text(
-                          this.email.subject,
-                          style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.w100),
-                        ),
+                        decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius:
+                                BorderRadius.all(Radius.elliptical(5, 3))),
+                        margin: EdgeInsets.only(left: 30),
+                        width: (MediaQuery.of(context).size.width * 0.35),
+                        height: (MediaQuery.of(context).size.height * 0.06),
+                        child: FlatButton(
+                            color: Color(0xFFEA7773),
+                            textColor: Colors.white,
+                            onPressed: () {
+                              navigatetocompose(newEmail);
+                            },
+                            child: Text(
+                              'Reply All',
+                              style: TextStyle(fontSize: 20),
+                            )),
                       ),
                       Container(
-                          padding: EdgeInsets.only(right: 20, top: 30),
-                          child: _icon),
+                        decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius:
+                                BorderRadius.all(Radius.elliptical(5, 3))),
+                        margin: EdgeInsets.only(right: 30),
+                        width: (MediaQuery.of(context).size.width * 0.35),
+                        height: (MediaQuery.of(context).size.height * 0.06),
+                        child: FlatButton(
+                            color: Color(0xFFEA7773),
+                            textColor: Colors.white,
+                            onPressed: () {
+                              navigatetocompose(newEmail);
+                            },
+                            child: Text(
+                              'Reply',
+                              style: TextStyle(fontSize: 20),
+                            )),
+                      )
                     ],
                   ),
-                  Card(
-                    margin: EdgeInsets.only(top: 25),
-                    elevation: 0,
-                    child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Color(int.parse(this.email.color)),
-                          child: Text(
-                            this.email.subject[0].toUpperCase(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 20,
-                                color: Colors.white),
-                          ),
-                        ),
-                        title: SizedBox(
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Text(
-                                  "Yash Jain",
-                                  style: TextStyle(fontSize: 22),
-                                ),
-                              ),
-                              Text(
-                                this.email.date,
-                                style:
-                                    TextStyle(fontSize: 13, color: Colors.grey),
-                              )
-                            ],
-                          ),
-                        ),
-                        trailing: IconButton(
-                            icon: icon,
-                            onPressed: () {
-                              setState(() {
-                                show();
-                              });
-                            })),
-                  ),
-                  Details(
-                      email.sender, email.reciever, email.date, width, height),
-                  Container(
-                    margin: EdgeInsets.only(top: 60, right: 20, left: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                            child: Text(
-                          this.email.compose,
-                          style: TextStyle(fontSize: 20),
-                        )),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 80, bottom: 40),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(left: 30),
-                          width: (MediaQuery.of(context).size.width * 0.35),
-                          height: (MediaQuery.of(context).size.height * 0.06),
-                          child: FlatButton(
-                              color: Color(0xFFEA7773),
-                              textColor: Colors.white,
-                              onPressed: () {
-                                navigatetocompose(newEmail);
-                              },
-                              child: Text(
-                                'Reply All',
-                                style: TextStyle(fontSize: 20),
-                              )),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 30),
-                          width: (MediaQuery.of(context).size.width * 0.35),
-                          height: (MediaQuery.of(context).size.height * 0.06),
-                          child: FlatButton(
-                              color: Color(0xFFEA7773),
-                              textColor: Colors.white,
-                              onPressed: () {
-                                navigatetocompose(newEmail);
-                              },
-                              child: Text(
-                                'Reply',
-                                style: TextStyle(fontSize: 20),
-                              )),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              )),
-            )));
+                )
+              ],
+            )),
+          ),
+        ));
   }
 
   void moveback(int num) {
@@ -192,7 +204,7 @@ class _Description extends State<Description> {
 
   void navigatetocompose(Email email) async {
     var result =
-        await Navigator.push(context, SlideRightRoute(page: Compose(email)));
+        await Navigator.push(context, Transition(page: Compose(email)));
 
     if (result == true) {
       moveback(1);

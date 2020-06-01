@@ -76,7 +76,7 @@ class _Compose extends State<Compose> {
                 child: Column(children: <Widget>[
                   Padding(
                       padding: EdgeInsets.only(
-                        top: 40,
+                        top: 20,
                         left: 20,
                         right: 20,
                       ),
@@ -134,7 +134,7 @@ class _Compose extends State<Compose> {
                         right: 20,
                       ),
                       child: TextFormField(
-                        maxLines: 3,
+                        maxLines: 2,
                         keyboardType: TextInputType.text,
                         controller: compose,
                         validator: (String value) {
@@ -157,7 +157,9 @@ class _Compose extends State<Compose> {
   void _send() async {
     moveback();
 
-    email.date = DateFormat.MMMd().format(DateTime.now());
+    email.date = DateFormat.MMMd().format(DateTime.now()) +
+        ', ' +
+        DateFormat.jm().format(DateTime.now());
     email.color = random();
     int result = await databasehelper.insertEmail(email);
 

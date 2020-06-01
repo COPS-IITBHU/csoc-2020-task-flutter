@@ -40,7 +40,7 @@ class _Gmaillist extends State<Gmaillist> {
         body: Builder(
             builder: (context) => Container(
                 margin: EdgeInsets.only(
-                  top: 20.0,
+                  top: 10.0,
                 ),
                 child: FloatingSearchBar.builder(
                   itemCount: count,
@@ -71,24 +71,30 @@ class _Gmaillist extends State<Gmaillist> {
                           title: Column(
                             children: <Widget>[
                               Container(
-                                  padding:
-                                      EdgeInsets.only(top: 10.0, bottom: 0),
+                                  padding: EdgeInsets.only(top: 5.0, bottom: 0),
                                   child: SizedBox(
-                                    height: 20,
+                                    height: 25,
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Expanded(
                                             child: Text(
-                                          this.emaillist[position].subject,
+                                          ('To: ' +
+                                              this
+                                                  .emaillist[position]
+                                                  .reciever
+                                                  .split('@')[0]),
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 19),
+                                          style: TextStyle(fontSize: 18),
                                         )),
                                         Padding(
-                                          padding: EdgeInsets.only(left: 5),
+                                          padding: EdgeInsets.only(left: 3),
                                           child: Text(
-                                            this.emaillist[position].date,
+                                            this
+                                                .emaillist[position]
+                                                .date
+                                                .split(',')[0],
                                             style: titlestyle,
                                           ),
                                         )
@@ -99,26 +105,47 @@ class _Gmaillist extends State<Gmaillist> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Expanded(
-                                      child: Text(
-                                    this.emaillist[position].compose,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 17, color: Colors.black54),
-                                  )),
-                                  IconButton(
-                                      icon: emaillist[position].star == 1
-                                          ? Icon(Icons.star_border)
-                                          : Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                            ),
-                                      onPressed: () {
-                                        star(position);
-                                      })
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.57,
+                                    child: Text(
+                                      this.emaillist[position].subject,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
+                          ),
+                          subtitle: Container(
+                            margin: EdgeInsets.only(bottom: 3),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                    child: Text(
+                                  this.emaillist[position].compose,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black54),
+                                )),
+                                Container(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      star(position);
+                                    },
+                                    child: emaillist[position].star == 1
+                                        ? Icon(Icons.star_border)
+                                        : Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
+                                          ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                           onTap: () {
                             Icon ref = emaillist[position].star == 1
@@ -166,6 +193,7 @@ class _Gmaillist extends State<Gmaillist> {
         floatingActionButton: Container(
           child: FloatingActionButton(
             backgroundColor: Colors.white,
+            tooltip: 'Compose Email',
             child: CustomPaint(
               child: Container(),
               foregroundPainter: Floatingpainter(),
@@ -179,7 +207,7 @@ class _Gmaillist extends State<Gmaillist> {
 
   void navigatetocompose(Email email) async {
     var result =
-        await Navigator.push(context, SlideRightRoute(page: Compose(email)));
+        await Navigator.push(context, Transition(page: Compose(email)));
 
     if (result == true) {
       updateemail();
@@ -189,7 +217,7 @@ class _Gmaillist extends State<Gmaillist> {
   void navigatetodescription(
       Email email, Icon icon, BuildContext context) async {
     var result = await Navigator.push(
-        context, SlideRightRoute(page: Description(email, icon)));
+        context, Transition(page: Description(email, icon)));
     if (result == 1) {
       updateemail();
     } else {
