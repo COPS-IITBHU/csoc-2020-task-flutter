@@ -23,9 +23,16 @@ class SideNav extends StatelessWidget {
               title: Text("Primary"),
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.archive),
-            title: Text("Archive"),
+          InkWell(
+            onTap: () {
+              if (ModalRoute.of(context).settings.name == "/archive") return;
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/archive', ModalRoute.withName("/home"));
+            },
+            child: ListTile(
+              leading: Icon(Icons.archive),
+              title: Text("Archive"),
+            ),
           ),
           InkWell(
             onTap: () {
@@ -35,7 +42,7 @@ class SideNav extends StatelessWidget {
             },
             child: ListTile(
               leading: Icon(Icons.bookmark),
-              title: Text("Bookmarked"),
+              title: Text("Favourites"),
             ),
           ),
         ],

@@ -16,7 +16,7 @@ class _EmailDetailState extends State<EmailDetail> {
   _EmailDetailState(this._mail);
 
   Mail _mail;
-  bool update = false;
+  String update = 'false';
   DatabaseHelper helper = DatabaseHelper();
   bool expaned = false;
 
@@ -38,14 +38,23 @@ class _EmailDetailState extends State<EmailDetail> {
             },
           ),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.archive), onPressed: null),
+            IconButton(
+                color: Colors.grey,
+                icon: Icon(Icons.archive),
+                onPressed: () {
+                  setState(() {
+                    _mail.archive = _mail.archive ^ 1;
+                    update = 'true';
+                    helper.updateMail(_mail);
+                  });
+                }),
             IconButton(
                 color: Colors.grey,
                 icon: Icon(Icons.delete),
                 onPressed: () {
                   setState(() {
                     helper.deleteMail(_mail.id);
-                    update = true;
+                    update = 'delete';
                     Navigator.pop(context, update);
                   });
                 }),
@@ -59,10 +68,14 @@ class _EmailDetailState extends State<EmailDetail> {
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Wrap(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Container(
-                      width: 320.0,
+                      width: MediaQuery.of(context).orientation ==
+                              Orientation.landscape
+                          ? 600
+                          : 320,
                       child: Text(
                         _mail.subject,
                         style: TextStyle(
@@ -230,7 +243,7 @@ class _EmailDetailState extends State<EmailDetail> {
             onPressed: () {
               setState(() {
                 _mail.favourite = 0;
-                update = true;
+                update = 'true';
                 helper.updateMail(_mail);
               });
             },
@@ -240,7 +253,7 @@ class _EmailDetailState extends State<EmailDetail> {
             onPressed: () {
               setState(() {
                 _mail.favourite = 1;
-                update = true;
+                update = 'true';
                 helper.updateMail(_mail);
               });
             });

@@ -41,14 +41,18 @@ class SharedPreference {
   void setSuggestions(String query) async {
     SharedPreferences _local = await this.preferences;
     List<String> suggestions =
-        _local.getStringList('suggest').toSet().toList() ?? List<String>();
+        _local.getStringList('suggest') ?? List<String>();
+
+    if (suggestions.length > 10) suggestions.removeAt(0);
+
     suggestions.add(query);
-    _local.setStringList('suggest', suggestions);
+
+    _local.setStringList('suggest', suggestions.toSet().toList());
   }
 
   Future<List<String>> getSuggestions() async {
     SharedPreferences _local = await this.preferences;
-    return _local.getStringList('suggest').toSet().toList();
+    return _local.getStringList('suggest').toList();
   }
 }
 

@@ -28,11 +28,14 @@ class CustomSearchDelegate extends SearchDelegate<String> {
                 onTap: () {
                   query = data;
                 },
-                child: Text(
-                  data,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    letterSpacing: 2.0,
+                child: ListTile(
+                  leading: Icon(Icons.history),
+                  title: Text(
+                    data,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      letterSpacing: 2.0,
+                    ),
                   ),
                 ),
               ),
@@ -99,12 +102,12 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         progress: transitionAnimation,
       ),
       onPressed: () {
-        this.close(context, null);
+        this.close(context, update);
       },
     );
   }
 
-  bool update = false;
+  String update = 'false';
   @override
   Widget buildResults(BuildContext context) {
     final List<Mail> suggestions = query.isEmpty
@@ -115,7 +118,9 @@ class CustomSearchDelegate extends SearchDelegate<String> {
                 e.body.contains(query) ||
                 e.recepient.contains(query))
             .toList();
+
     if (suggestions.isNotEmpty) preference.setSuggestions(query);
+
     return suggestions.isEmpty
         ? Center(
             child: Column(
@@ -157,13 +162,20 @@ class CustomSearchDelegate extends SearchDelegate<String> {
             itemCount: suggestions.length,
             itemBuilder: (context, index) => InkWell(
               onTap: () async {
-                bool result = await Navigator.push(
+                String result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => EmailDetail(suggestions[index]),
                   ),
                 );
-                if (result == true) update = true;
+                if (result == 'true')
+                  update = 'true';
+                else if (result == 'delete') {
+                  update = 'true';
+                  _mails.remove(suggestions[index]);
+                  suggestions.removeAt(index);
+                  showSuggestions(context);
+                }
               },
               child: ListTile(
                 leading: Icon(Icons.mail),

@@ -6,18 +6,17 @@ import './email_detail.dart';
 import '../search.dart';
 import './email_create.dart';
 
-class FavouriteList extends StatefulWidget {
+class ArchiveList extends StatefulWidget {
   @override
-  _FavouriteListState createState() => _FavouriteListState();
+  _ArchiveList createState() => _ArchiveList();
 }
 
-class _FavouriteListState extends State<FavouriteList> {
+class _ArchiveList extends State<ArchiveList> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Mail> emailList;
 
   Widget _listBuilder(BuildContext context, int index) {
     var date = dateformat(emailList[index].date);
-
     return Dismissible(
       background: Container(
         padding: EdgeInsets.only(left: 15.0),
@@ -61,15 +60,7 @@ class _FavouriteListState extends State<FavouriteList> {
               children: <Widget>[
                 Text('$date'),
                 Expanded(
-                  child: IconButton(
-                      icon: Icon(Icons.star),
-                      onPressed: () {
-                        setState(() {
-                          emailList[index].favourite = 0;
-                          _update(context, emailList[index]);
-                          emailList.removeAt(index);
-                        });
-                      }),
+                  child: favourite(emailList[index]),
                 ),
               ],
             ),
@@ -96,7 +87,7 @@ class _FavouriteListState extends State<FavouriteList> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Favourites",
+            "Archive",
             style: TextStyle(
               color: Colors.white,
               fontSize: 20.0,
@@ -131,7 +122,6 @@ class _FavouriteListState extends State<FavouriteList> {
             if (result == true) {
               updateListView();
             }
-            print(result);
           },
         ),
         drawer: SideNav(),
@@ -158,7 +148,7 @@ class _FavouriteListState extends State<FavouriteList> {
 
   void updateListView() async {
     await databaseHelper.initializeDatabase();
-    List<Mail> emailsFuture = await databaseHelper.getFavouriteList();
+    List<Mail> emailsFuture = await databaseHelper.getArchiveList();
     setState(() {
       this.emailList = emailsFuture;
     });
@@ -173,5 +163,25 @@ class _FavouriteListState extends State<FavouriteList> {
 
   void _update(BuildContext context, Mail mail) async {
     await databaseHelper.updateMail(mail);
+  }
+
+  IconButton favourite(Mail _mail) {
+    return _mail.favourite == 1
+        ? IconButton(
+            icon: Icon(Icons.star),
+            onPressed: () {
+              setState(() {
+                _mail.favourite = 0;
+              });
+              _update(context, _mail);
+            })
+        : IconButton(
+            icon: Icon(Icons.star_border),
+            onPressed: () {
+              setState(() {
+                _mail.favourite = 1;
+              });
+              _update(context, _mail);
+            });
   }
 }

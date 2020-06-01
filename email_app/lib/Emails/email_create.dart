@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/email.dart';
 import '../database/database_helper.dart';
-import 'package:intl/intl.dart';
 import 'dart:math' as math;
 
 class EmailCreate extends StatefulWidget {
@@ -21,8 +20,12 @@ class _EmailCreate extends State<EmailCreate> {
     if (_formKey.currentState.validate()) {
       _add.body ??= ' ';
       _add.subject ??= ' ';
-      _add.date = DateFormat.yMMMd().format(DateTime.now());
       _add.favourite = 0;
+      _add.archive = 0;
+
+      var date = DateTime.now();
+      _add.date = '$date';
+
       await helper.insertMail(_add);
       Navigator.pop(context, true);
     }

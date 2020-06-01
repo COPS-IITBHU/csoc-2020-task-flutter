@@ -6,6 +6,7 @@ import './database/database_helper.dart';
 import './models/email.dart';
 import './search.dart';
 import './Emails/favourites.dart';
+import './Emails/archive.dart';
 
 void main() {
   runApp(
@@ -18,6 +19,7 @@ void main() {
       routes: {
         '/home': (context) => MyHomePage(),
         '/favourites': (context) => FavouriteList(),
+        '/archive': (context) => ArchiveList(),
       },
     ),
   );
@@ -36,6 +38,7 @@ class _MyHomePage extends State<MyHomePage> {
   int count = 0;
 
   Widget _listBuilder(BuildContext context, int index) {
+    var date = dateformat(emailList[index].date);
     return Dismissible(
       background: Container(
         padding: EdgeInsets.only(left: 15.0),
@@ -58,7 +61,7 @@ class _MyHomePage extends State<MyHomePage> {
         elevation: 5.0,
         child: InkWell(
           onTap: () async {
-            bool result = await Navigator.push(
+            String result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (BuildContext context) {
@@ -66,7 +69,7 @@ class _MyHomePage extends State<MyHomePage> {
                 },
               ),
             );
-            if (result == true) updateListView();
+            if (result == 'true' || result == 'delete') updateListView();
           },
           child: ListTile(
             leading: CircleAvatar(
@@ -77,11 +80,13 @@ class _MyHomePage extends State<MyHomePage> {
               ),
             ),
             title: Text(emailList[index].recepient),
-            subtitle: Text(emailList[index].subject),
+            subtitle: Text(emailList[index].subject.length > 20
+                ? emailList[index].subject.substring(0, 20) + ' ...'
+                : emailList[index].subject),
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(emailList[index].date.substring(0, 2)),
+                Text('$date'),
                 Expanded(
                   child: favourite(emailList[index]),
                 ),
@@ -91,10 +96,16 @@ class _MyHomePage extends State<MyHomePage> {
         ),
       ),
       onDismissed: (direction) => {
-        setState(() {
-          _delete(context, emailList[index]);
-          emailList.removeAt(index);
-        })
+        direction == DismissDirection.startToEnd
+            ? setState(() {
+                _delete(context, emailList[index]);
+                emailList.removeAt(index);
+              })
+            : setState(() {
+                emailList[index].archive = 1;
+                _update(context, emailList[index]);
+                emailList.removeAt(index);
+              })
       },
     );
   }
@@ -120,11 +131,12 @@ class _MyHomePage extends State<MyHomePage> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(
+              onPressed: () async {
+                var result = await showSearch(
                   context: context,
                   delegate: CustomSearchDelegate(emailList),
                 );
+                if (result == 'true') updateListView();
               },
             ),
           ],
@@ -144,7 +156,6 @@ class _MyHomePage extends State<MyHomePage> {
             if (result == true) {
               updateListView();
             }
-            print(result);
           },
         ),
         drawer: SideNav(),

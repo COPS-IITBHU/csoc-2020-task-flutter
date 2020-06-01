@@ -6,7 +6,8 @@ class Mail {
       @required this.date,
       this.body,
       this.subject,
-      this.favourite});
+      this.favourite,
+      this.archive});
 
   Mail.withId(
       {@required this.id,
@@ -14,7 +15,8 @@ class Mail {
       @required this.date,
       this.body,
       this.subject,
-      this.favourite});
+      this.favourite,
+      this.archive});
 
   int id;
   String recepient;
@@ -22,6 +24,7 @@ class Mail {
   String subject;
   String date;
   int favourite;
+  int archive;
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -32,6 +35,7 @@ class Mail {
     map['date'] = date;
     map['subject'] = subject;
     map['favourite'] = favourite;
+    map['archive'] = archive;
     return map;
   }
 
@@ -42,5 +46,6 @@ class Mail {
     this.date = map['date'];
     this.subject = map['subject'];
     this.favourite = map['favourite'];
+    this.archive = map['archive'];
   }
 }
