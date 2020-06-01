@@ -45,6 +45,17 @@ class SideNav extends StatelessWidget {
               title: Text("Favourites"),
             ),
           ),
+          InkWell(
+            onTap: () {
+              if (ModalRoute.of(context).settings.name == "/profile") return;
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/profile', ModalRoute.withName("/home"));
+            },
+            child: ListTile(
+              leading: Icon(Icons.person),
+              title: Text("Profile"),
+            ),
+          ),
         ],
       ),
     );

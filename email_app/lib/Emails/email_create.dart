@@ -97,6 +97,11 @@ class _EmailCreate extends State<EmailCreate> {
                   return null;
                 },
                 onChanged: (value) => {_add.recepient = value},
+                onFieldSubmitted: (value) {
+                  setState(() {
+                    formValidate();
+                  });
+                },
               ),
               Divider(
                 color: Colors.grey,
@@ -111,6 +116,11 @@ class _EmailCreate extends State<EmailCreate> {
                   border: InputBorder.none,
                 ),
                 onChanged: (value) => {_add.subject = value},
+                onFieldSubmitted: (value) {
+                  setState(() {
+                    formValidate();
+                  });
+                },
               ),
               Divider(
                 color: Colors.grey,
@@ -127,6 +137,11 @@ class _EmailCreate extends State<EmailCreate> {
                   hintText: 'Compose email',
                 ),
                 onChanged: (value) => {_add.body = value},
+                onFieldSubmitted: (value) {
+                  setState(() {
+                    formValidate();
+                  });
+                },
               ),
             ],
           ),

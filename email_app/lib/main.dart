@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import './Emails/email_detail.dart';
-import './Drawer.dart';
-import './Emails/email_create.dart';
-import './database/database_helper.dart';
-import './models/email.dart';
-import './search.dart';
 import './Emails/favourites.dart';
 import './Emails/archive.dart';
+import './Emails/email_create.dart';
+
+import './profile.dart';
+import './Drawer.dart';
+
+import './database/database_helper.dart';
+
+import './models/email.dart';
+
+import './search.dart';
 
 void main() {
   runApp(
@@ -20,6 +25,7 @@ void main() {
         '/home': (context) => MyHomePage(),
         '/favourites': (context) => FavouriteList(),
         '/archive': (context) => ArchiveList(),
+        '/profile': (context) => PersonalProfile(),
       },
     ),
   );
