@@ -3,12 +3,14 @@ import 'package:sqflite/sqflite.dart';
 import 'package:gmailapp/models/helpers.dart';
 import 'package:gmailapp/models/mail.dart';
 import './detail_view.dart';
+import 'dart:async';
 
 
 class DataSearch extends SearchDelegate<String> {
 
 
   List<Mail> mailList  = [];
+  var sugg =[];
   Map<String,int> getIndex ={};
   var sub = [] ;
   int count;
@@ -26,12 +28,16 @@ class DataSearch extends SearchDelegate<String> {
             sub.add(mailList[i].sub);
             getIndex[mailList[i].sub]= i;
           }
-          
+          sugg.clear();
+          for(int i=0;i<3;i++)
+          {
+             sugg.add(sub[i]);
+          }
       });
     });
   }
   
-  final sugg = ['just ', 'to ', 'test'];
+ 
   @override
   List<Widget> buildActions(BuildContext context) {
     
@@ -49,6 +55,7 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildLeading(BuildContext context) {
       sub.clear();
+     // sugg.clear();
       getIndex.clear();
       updateListView1();
     return IconButton(
@@ -75,6 +82,8 @@ class DataSearch extends SearchDelegate<String> {
         ? sugg
         : sub.where((element) => element.startsWith(query)).toList();
 
+        
+
      if(list.length==0)
      {
          return Scaffold( 
@@ -87,10 +96,11 @@ class DataSearch extends SearchDelegate<String> {
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         onTap: ()  async {
+           showToast(context);
            await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return  MailDetail(mailList.elementAt(getIndex[list[index]]));
         }));
-        },
+        }, 
         leading: Icon(Icons.contact_mail),
         title: RichText(
           text: TextSpan(
@@ -110,4 +120,25 @@ class DataSearch extends SearchDelegate<String> {
   
   
 
-  }}
+   }
+  static void showToast(BuildContext context) {
+
+    OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+        builder: (context) => ToastWidget()
+    );
+    Overlay.of(context).insert(overlayEntry);
+    Timer(Duration(seconds: 3), () =>  overlayEntry.remove());
+
+   }
+  }
+
+  class ToastWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body : Center(child: Image.asset('assets/gmailsearch.gif',fit: BoxFit.fill,)),
+    );
+  }
+}

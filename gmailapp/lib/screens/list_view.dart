@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:gmailapp/models/helpers.dart';
-import 'package:animated_splash/animated_splash.dart';
+import 'dart:async';
 import 'package:gmailapp/models/mail.dart';
 import './compose.dart';
 import './detail_view.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:gmailapp/screens/search.dart';
+import './fav_view.dart';
 
 class MailList extends StatefulWidget {
   @override
@@ -14,8 +15,6 @@ class MailList extends StatefulWidget {
 }
 
 class _MailListState extends State<MailList> {
-
-  
   DataSearch item = DataSearch();
   DbHelper databaseHelper = DbHelper();
   List<Mail> mailList;
@@ -24,12 +23,21 @@ class _MailListState extends State<MailList> {
 
   @override
   Widget build(BuildContext context) {
-    // updateListView();
+    if (mailList == null) {
+      mailList = List<Mail>();
+      updateListView();
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: CircleAvatar(
-          child: Icon(Icons.email),
           backgroundColor: Colors.yellow,
+          radius : 10,
+                  child: CircleAvatar(
+             radius : 24,
+            child: Icon(Icons.send,color: Colors.yellow,),
+            backgroundColor: Colors.purple,
+          ),
         ),
         title: Text('Sent'),
         actions: <Widget>[
@@ -41,6 +49,19 @@ class _MailListState extends State<MailList> {
               ),
               onPressed: () {
                 showSearch(context: context, delegate: DataSearch());
+              }),
+          IconButton(
+              icon: Icon(
+                Icons.star,
+                color: Colors.yellow,
+                size: 30,
+              ),
+              onPressed: () async {
+                await Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
+                  return FavView();
+                }));
+                updateListView();
               })
         ],
       ),
@@ -63,6 +84,7 @@ class _MailListState extends State<MailList> {
   }
 
   ListView getMailListView() {
+    // updateListView();
     return ListView.builder(
         itemCount: count,
         itemBuilder: (BuildContext context, int position) {
@@ -72,40 +94,27 @@ class _MailListState extends State<MailList> {
               onDismissed: (direction) {
                 // undo = false;
                 _delete(mailList[position].id);
+                showToast(context, 'delete');
                 updateListView();
-                // var deleted = mailList[position];
-                // //mailList.removeAt(position);
-                // Scaffold.of(context).showSnackBar(SnackBar(
-                //   content: Text('Deleting Mail...'),
-                //   action: SnackBarAction(
-                //       label: 'Undo',
-                //       onPressed: () {
-                //         setState(() {
-                //           undo = true;
-                //           mailList.insert(position, deleted);
-                //           // updateListView();
-                //         });
-                //       }),
-                // ));
-                // if(!undo)
-                //     {
-                //         _delete(mailList[position].id);
-                //         updateListView();
-                //     }
-                // showAlertDialog(context, mailList[position].id);
               },
               child: Card(
-                shadowColor: Colors.yellow,
+                margin: EdgeInsets.all(6),
+                shadowColor: Colors.purple,
                 color: Colors.white,
-                elevation: 3.0,
-                
+                elevation: 10.0,
                 child: ListTile(
                   leading: CircleAvatar(
+                    radius:20,
                     backgroundColor: Colors.purple,
-                    child: Text(
-                      mailList[position].from[0],
-                      style: TextStyle(
-                        color: Colors.yellow,
+                                      child: CircleAvatar(
+                                        radius:17,
+                      backgroundColor: Colors.yellow,
+                      child: Text(
+                        mailList[position].from[0],
+                        style: TextStyle(
+                          color: Colors.purple,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
@@ -114,29 +123,37 @@ class _MailListState extends State<MailList> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.black,
+                      fontSize: 22,
                     ),
                   ),
                   subtitle: Text(
                     this.mailList[position].sub,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  trailing: Text(
-                    this.mailList[position].date.substring(0, 12),
+                  trailing: Column(
+                    children: <Widget>[
+                      Text(mailList[position].date.substring(0,12)),
+                      Expanded(
+                        child: IconButton(
+                            // iconSize: 5,
+                            icon: this.mailList[position].fav
+                                ? Icon(Icons.star, color: Colors.yellow)
+                                : Icon(Icons.star_border),
+                                
+                            onPressed: () {
+                              setState(() {
+                                this.mailList[position].fav =
+                                    !this.mailList[position].fav;
+                                updateFav(this.mailList[position]);
+                              });
+                            }),
+                      ),
+                    ],
                   ),
                   onTap: () {
-                  //  final Function duringSplash = () {
-                  //     return 1 ;
-                  //  };
-                  //  final Map<int, Widget> op = {1: MailDetail(this.mailList[position])}; 
-                  //    AnimatedSplash(
-                  // imagePath: 'assets/gmaildribbble.gif',
-                  // home: MailDetail(this.mailList[position]),
-                  // customFunction: duringSplash,
-                  // duration: 5000,
-                  // type: AnimatedSplashType.BackgroundProcess,
-                  // outputAndHome: op,
-                  //  );
-                   showDetail(this.mailList[position]);
+                    showToast(context, 'detail');
+                    showDetail(this.mailList[position]);
+                    
                   },
                 ),
               ));
@@ -157,15 +174,14 @@ class _MailListState extends State<MailList> {
     });
   }
 
+  void updateFav(Mail mail) async {
+    await databaseHelper.updateFav(mail);
+  }
+
   void showDetail(Mail mail) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return MailDetail(mail);
     }));
-    //updateListView();
-  }
-
-  void undoMail(int position, Mail mail) async {
-    await databaseHelper.addMail(mail);
     updateListView();
   }
 
@@ -180,14 +196,14 @@ class _MailListState extends State<MailList> {
       ),
     );
   }
- 
+
   void _delete(int id) async {
     await databaseHelper.deleteMail(id);
     updateListView();
     debugPrint(id.toString());
   }
 
-  void showAlertDialog(BuildContext context,int id) {
+  void showAlertDialog(BuildContext context, int id) {
     AlertDialog alert = AlertDialog(
       title: Text('Confrim : '),
       content: Image.asset('assert/noresults.jpg'),
@@ -196,7 +212,10 @@ class _MailListState extends State<MailList> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('Cancel')),
+            child: Text(
+              'Cancel',
+              style: TextStyle(fontSize: 20),
+            )),
         FlatButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -205,7 +224,10 @@ class _MailListState extends State<MailList> {
                 _delete(id);
               });
             },
-            child: Text('Ok')),
+            child: Text(
+              'Ok',
+              style: TextStyle(fontSize: 20),
+            )),
       ],
     );
 
@@ -214,5 +236,34 @@ class _MailListState extends State<MailList> {
         builder: (BuildContext context) {
           return alert;
         });
+  }
+
+  static void showToast(BuildContext context, String w) {
+    OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(builder: (context) => ToastWidget(w));
+    Overlay.of(context).insert(overlayEntry);
+    Timer(Duration(seconds: 2), () => overlayEntry.remove());
+  }
+}
+
+class ToastWidget extends StatelessWidget {
+  final String w;
+  @override
+  ToastWidget(this.w);
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.yellow[400],
+      body: Center(
+          child: w == 'detail'
+              ? Image.asset(
+                  'assets/mail_detail.gif',
+                  fit: BoxFit.fill,
+                )
+              : Image.asset(
+                  'assets/delete-animation.gif',
+                  fit: BoxFit.fill,
+                )),
+    );
   }
 }

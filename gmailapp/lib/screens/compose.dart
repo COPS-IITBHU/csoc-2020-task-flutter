@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'dart:async';
 
 class Compose extends StatefulWidget {
   @override
@@ -52,6 +53,13 @@ class _ComposeState extends State<Compose> {
         appBar: AppBar(
           title: Text('Compose'),
           actions: <Widget>[
+            IconButton(icon:Icon(Icons.info_outline,
+            color: Colors.yellow,
+           ),
+           onPressed:() {
+             showInfoDialog(context);
+           } ,
+           ),
             IconButton(
               icon: Icon(
                 Icons.send,
@@ -59,8 +67,8 @@ class _ComposeState extends State<Compose> {
               ),
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
+                  showToast(context, 'loading');
                   var error = await mailer();
-                  debugPrint(save.toString());
                   if (error.length > 45) error = "Invalid Mail Address ";
                   if (save) {
                     showAlertDialog(context);
@@ -85,6 +93,9 @@ class _ComposeState extends State<Compose> {
                   Padding(
                     padding: EdgeInsets.all(10),
                     child: TextFormField(
+                      enableSuggestions: true,
+                      toolbarOptions: ToolbarOptions(copy: true),
+                      autofocus: true,
                       controller: fromController,
                       validator: (text) {
                         debugPrint(text);
@@ -100,7 +111,7 @@ class _ComposeState extends State<Compose> {
                       },
                       decoration: InputDecoration(
                           labelText: 'From :',
-                          hintText: 'dasarimadhava@gmail.com',
+                          hintText: 'ex : name@gmail.com',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0))),
                     ),
@@ -138,7 +149,11 @@ class _ComposeState extends State<Compose> {
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: TextFormField(
+                      
+                      enableSuggestions: true,
+                      toolbarOptions: ToolbarOptions(copy: true,paste:true),
                       controller: toController,
+                      
                       validator: (text) {
                         if (text.isEmpty) {
                           return ('Please Enter the mailaddress of recepient ');
@@ -159,7 +174,7 @@ class _ComposeState extends State<Compose> {
                             },
                           ),
                           labelText: 'To : ',
-                          hintText: 'ex :  user@gmail.com',
+                          hintText: 'ex :  name@gmail.com',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0))),
                     ),
@@ -170,6 +185,7 @@ class _ComposeState extends State<Compose> {
                         children: <Widget>[
                           ListTile(
                             title: TextFormField(
+                              toolbarOptions: ToolbarOptions(copy: true),
                               controller: ccController,
                               keyboardType: TextInputType.emailAddress,
                               onChanged: (value) {
@@ -177,8 +193,9 @@ class _ComposeState extends State<Compose> {
                                 debugPrint(ccController.text);
                               },
                               decoration: InputDecoration(
+                                  
                                   labelText: 'Cc : ',
-                                  hintText: 'ex :  user@gmail.com',
+                                  hintText: 'ex :  name@gmail.com',
                                   border: OutlineInputBorder(
                                       borderRadius:
                                           BorderRadius.circular(5.0))),
@@ -186,6 +203,8 @@ class _ComposeState extends State<Compose> {
                           ),
                           ListTile(
                             title: TextFormField(
+                               toolbarOptions: ToolbarOptions(copy: true),
+                              enableSuggestions: true,
                               controller: bccController,
                               keyboardType: TextInputType.emailAddress,
                               onChanged: (value) {
@@ -193,7 +212,7 @@ class _ComposeState extends State<Compose> {
                               },
                               decoration: InputDecoration(
                                   labelText: 'Bcc : ',
-                                  hintText: 'ex :  user@gmail.com',
+                                  hintText: 'ex :  name@gmail.com',
                                   border: OutlineInputBorder(
                                       borderRadius:
                                           BorderRadius.circular(5.0))),
@@ -204,12 +223,14 @@ class _ComposeState extends State<Compose> {
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: TextFormField(
+                      maxLines : 3,
                       controller: subController,
                       onChanged: (value) {
                         this.mail.sub = subController.text;
                       },
                       decoration: InputDecoration(
                           labelText: 'Subject : ',
+                          
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0))),
                     ),
@@ -222,7 +243,7 @@ class _ComposeState extends State<Compose> {
                         this.mail.content = contentController.text;
                         
                       },
-                      maxLines: 20,
+                      maxLines: 40,
                       decoration: InputDecoration(
                           labelText: 'Content : ',
                           border: OutlineInputBorder(
@@ -236,14 +257,9 @@ class _ComposeState extends State<Compose> {
 
   void showAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-      title: Text('Confrim : '),
-      content: Text('Are You Sure to Send This Mail ? '),
+      title:Text('Are You Sure to Send This Mail ? ') ,
+      content: Image.asset('assets/confrim.gif'),
       actions: <Widget>[
-        FlatButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Cancel')),
         FlatButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -251,7 +267,12 @@ class _ComposeState extends State<Compose> {
                 _save();
               });
             },
-            child: Text('Ok')),
+            child: Text('Ok',style:TextStyle(fontSize:20) ,)),
+            FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Cancel',style:TextStyle(fontSize:20) ,)),
       ],
     );
 
@@ -260,6 +281,23 @@ class _ComposeState extends State<Compose> {
         builder: (BuildContext context) {
           return alert;
         });
+  }
+
+  void showInfoDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title:Text('Info : ') ,
+      content:  Text('https://myaccount.google.com/lesssecureapps \n Go to this page and ‘ON’ the status of Less secure of app of your google account, otherwise, the google would not let you send emails.'),
+      actions: <Widget>[
+        FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop(); },
+            child: Text('Ok',style:TextStyle(fontSize:20) ,)),    
+      ],
+    );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert; });
   }
        
   void showError(BuildContext context, String msg) {
@@ -282,8 +320,8 @@ class _ComposeState extends State<Compose> {
   }
 
   void _save() async {
+    showToast(context,'save');
     Navigator.pop(context);
-    //mail.date = (DateFormat.yMMMd().format(DateTime.now())).toString();
     mail.date = (DateFormat.yMMMd().format(DateTime.now())).toString()+" , "+(DateFormat.Hm().format(DateTime.now())).toString();
     if (mail.sub.isEmpty) mail.sub = '(no subject )';
     if (mail.content == null) {
@@ -291,10 +329,7 @@ class _ComposeState extends State<Compose> {
     }
     await helper.addMail(mail);
   }
-// dasarimadhava810@gmail.com
-  //   https://support.google.com/accounts/answer/6010255?p=lsa_blocked&hl=en&visit_id=637166894705530050-3789727984&rd=1
-// Go to this page and ‘ON’ the status of Less secure of app of your google account, otherwise, the google would not let you send emails.
-
+  
   Future<String> mailer() async {
     String msg;
     final smtpServer = gmail(mail.from, passwordController.text);
@@ -325,4 +360,27 @@ class _ComposeState extends State<Compose> {
     return msg;
   }
 
+    static void showToast(BuildContext context,String w) {
+
+    OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+        builder: (context) => ToastWidget(w)
+    );
+    Overlay.of(context).insert(overlayEntry);
+    Timer(Duration(seconds: 6 ), () =>  overlayEntry.remove());
+
+  }
  }
+
+class ToastWidget extends StatelessWidget {
+  final String w;
+  ToastWidget(this.w);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body : Center(child:  w=='save' ? Image.asset('assets/sendmail.gif',fit: BoxFit.fill,)
+                                      :Image.asset('assets/loading1.gif',fit: BoxFit.fill,) ),
+    );
+  }
+}

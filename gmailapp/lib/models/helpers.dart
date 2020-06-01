@@ -27,11 +27,11 @@ class DbHelper{
     return _database;
    }
 
-   
+    
   Future<Database> initializeDb() async {
 
       Directory  directory =  await getApplicationDocumentsDirectory();
-      String path = directory.path + 'mail.db';
+      String path = directory.path + 'mail1.db';
 
       var mailDataBase = await openDatabase(path,version:1,onCreate: _createDb) ;
 
@@ -40,7 +40,7 @@ class DbHelper{
 
   void _createDb(Database db,int version) async {
          
-          await db.execute('CREATE TABLE "Mail" ("id" INTEGER PRIMARY KEY NOT NULL ,"to" TEXT,"from" TEXT,"sub" TEXT,"content" TEXT,"date" TEXT,"cc" Text,"bcc" TEXT)');
+          await db.execute('CREATE TABLE "Mail" ("id" INTEGER PRIMARY KEY NOT NULL ,"to" TEXT,"from" TEXT,"sub" TEXT,"content" TEXT,"fav" TEXT,"date" TEXT,"cc" TEXT,"bcc" TEXT)');
   }
 
 
@@ -67,15 +67,13 @@ class DbHelper{
         int x = await db.delete('Mail',where :'"id"=?',whereArgs: [id]);
         return x ;
     }
-    
-    Future<int> getCount() async {
 
-      Database db = await this.database;
-        List<Map<String,dynamic>> x = await  db.rawQuery('SELECT COUNT (*) from "Mail"');
-        int count = Sqflite.firstIntValue(x);
-        return count ;
-    }
+    Future<int> updateFav(Mail mail) async {
+        Database db = await this.database;
 
+        var   x = await db.update('Mail', mail.toMap() ,where:'id=?',whereArgs:[mail.id] );
+       return x ;
+     } 
     Future<List<Mail>>  getMailList() async{
            
             var mailMapList = await getMailMapList();
