@@ -30,12 +30,16 @@ class _MailListState extends State<MailList> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 20,
         leading: CircleAvatar(
           backgroundColor: Colors.yellow,
-          radius : 10,
-                  child: CircleAvatar(
-             radius : 24,
-            child: Icon(Icons.send,color: Colors.yellow,),
+          radius: 10,
+          child: CircleAvatar(
+            radius: 24,
+            child: Icon(
+              Icons.send,
+              color: Colors.yellow,
+            ),
             backgroundColor: Colors.purple,
           ),
         ),
@@ -79,7 +83,17 @@ class _MailListState extends State<MailList> {
           updateListView();
         },
       ),
-      body: getMailListView(),
+      body: mailList.length == 0
+          ? Center(
+            child: Image.asset(
+                "assets/zero-inbox.jpg",
+                fit: BoxFit.fill,
+                height: 620,
+                
+              ),
+              
+          )
+          : getMailListView(),
     );
   }
 
@@ -104,13 +118,13 @@ class _MailListState extends State<MailList> {
                 elevation: 10.0,
                 child: ListTile(
                   leading: CircleAvatar(
-                    radius:20,
+                    radius: 20,
                     backgroundColor: Colors.purple,
-                                      child: CircleAvatar(
-                                        radius:17,
+                    child: CircleAvatar(
+                      radius: 17,
                       backgroundColor: Colors.yellow,
                       child: Text(
-                        mailList[position].from[0],
+                        mailList[position].from[0].toUpperCase(),
                         style: TextStyle(
                           color: Colors.purple,
                           fontSize: 20,
@@ -132,14 +146,13 @@ class _MailListState extends State<MailList> {
                   ),
                   trailing: Column(
                     children: <Widget>[
-                      Text(mailList[position].date.substring(0,12)),
+                      Text(mailList[position].date.substring(0, 12)),
                       Expanded(
                         child: IconButton(
                             // iconSize: 5,
                             icon: this.mailList[position].fav
                                 ? Icon(Icons.star, color: Colors.yellow)
                                 : Icon(Icons.star_border),
-                                
                             onPressed: () {
                               setState(() {
                                 this.mailList[position].fav =
@@ -153,7 +166,6 @@ class _MailListState extends State<MailList> {
                   onTap: () {
                     showToast(context, 'detail');
                     showDetail(this.mailList[position]);
-                    
                   },
                 ),
               ));

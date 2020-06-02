@@ -101,7 +101,7 @@ class _MailDetailState extends State<MailDetail> {
                                         radius:17,
                       backgroundColor: Colors.yellow,
                       child: Text(
-                        mail.from[0],
+                        mail.from[0].toUpperCase(),
                         style: TextStyle(
                           color: Colors.purple,
                           fontSize: 20,
@@ -111,7 +111,7 @@ class _MailDetailState extends State<MailDetail> {
                   ),
                     title: Text(
                       name,
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,)
                     ),
                     subtitle: Text('to: $to'),
                     trailing: IconButton(
@@ -131,38 +131,44 @@ class _MailDetailState extends State<MailDetail> {
             Visibility(
               visible: _isVisible,
               child: Container(
-                padding: EdgeInsets.all(5),
+                //padding: EdgeInsets.all(3),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.0),
                     border: Border.all(color: Colors.purple)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
+
                   children: <Widget>[
+
                     ListTile(
-                      leading: Text('From :'),
-                      title: Text(mail.from),
+                      leading: Text('From :',style:TextStyle(fontWeight: FontWeight.bold)),
+                      title: Text(mail.from,style:TextStyle(fontWeight: FontWeight.w600)),
                     ),
                     ListTile(
-                      leading: Text('To :'),
-                      title: Text(mail.to),
+                      leading: Text('To :',style:TextStyle(fontWeight: FontWeight.bold)),
+                      title: Text(mail.to,style:TextStyle(fontWeight: FontWeight.w600)),
                     ),
                     ListTile(
-                      leading: Text('Date :'),
-                      title: Text(mail.date),
+                      leading: Text('Date :',style:TextStyle(fontWeight: FontWeight.bold)),
+                      title: Text(mail.date,style:TextStyle(fontWeight: FontWeight.w600)),
                     ),
                     Visibility(
                       visible: _showCc,
                       child: ListTile(
-                        leading: Text('Cc :'),
-                        title: Text(cc),
+                        leading: Text('Cc :',style:TextStyle(fontWeight: FontWeight.bold)),
+                        title: Text(cc,style:TextStyle(fontWeight: FontWeight.w600)),
                       ),
                     ),
                     Visibility(
                       visible: _showBcc,
                       child: ListTile(
-                        leading: Text('Bcc :'),
-                        title: Text(bcc),
+                        leading: Text('Bcc :',style:TextStyle(fontWeight: FontWeight.bold)),
+                        title: Text(bcc,style:TextStyle(fontWeight: FontWeight.w600)),
                       ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.lock_outline),
+                      title: Text("Standard encryption(TLS)\nSee security details",style:TextStyle(fontWeight: FontWeight.w600)),
                     ),
                   ],
                 ),
@@ -172,7 +178,7 @@ class _MailDetailState extends State<MailDetail> {
               padding: EdgeInsets.all(15),
               child: Text(mail.content,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 15,
                   )),
             ),
           ],

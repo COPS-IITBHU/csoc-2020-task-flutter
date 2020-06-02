@@ -23,12 +23,32 @@ DbHelper databaseHelper = DbHelper();
     if (mailList == null) {
 			mailList = List<Mail>();
 			updateListView();
-		}
+		} 
      return Scaffold(
-      appBar: AppBar(
-        title: Text('Starred '),
+     
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              expandedHeight: 200.0,
+              floating: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                 // centerTitle: true,
+                  title: Text("Starred",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                      )),
+                  background: Image.asset(
+                    "assets/starred.gif",
+                    fit: BoxFit.cover,
+                  )),
+            ),
+          ];
+        },
+        body: getfavListView(),
       ),
-      body : getfavListView(),
        );
   }
 
@@ -50,7 +70,7 @@ DbHelper databaseHelper = DbHelper();
                                         radius:17,
                       backgroundColor: Colors.yellow,
                       child: Text(
-                        mailList[position].from[0],
+                        mailList[position].from[0].toUpperCase(),
                         style: TextStyle(
                           color: Colors.purple,
                           fontSize: 20,

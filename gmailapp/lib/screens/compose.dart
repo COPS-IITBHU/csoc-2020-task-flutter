@@ -69,6 +69,7 @@ class _ComposeState extends State<Compose> {
                 if (_formKey.currentState.validate()) {
                   showToast(context, 'loading');
                   var error = await mailer();
+                  debugPrint('msg : '+error);
                   if (error.length > 45) error = "Invalid Mail Address ";
                   if (save) {
                     showAlertDialog(context);
@@ -238,6 +239,7 @@ class _ComposeState extends State<Compose> {
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: TextFormField(
+                      
                       controller: contentController,
                       onChanged: (value) {
                         this.mail.content = contentController.text;
