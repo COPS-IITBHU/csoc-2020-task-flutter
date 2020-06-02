@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Mail {
   Mail(
       {@required this.recepient,
+      @required this.sender,
       @required this.date,
       this.body,
       this.subject,
@@ -12,6 +13,7 @@ class Mail {
   Mail.withId(
       {@required this.id,
       @required this.recepient,
+      @required this.sender,
       @required this.date,
       this.body,
       this.subject,
@@ -20,6 +22,7 @@ class Mail {
 
   int id;
   String recepient;
+  String sender;
   String body;
   String subject;
   String date;
@@ -31,6 +34,7 @@ class Mail {
     if (id != null) map['id'] = id;
 
     map['recepient'] = recepient;
+    map['sender'] = sender;
     map['body'] = body;
     map['date'] = date;
     map['subject'] = subject;
@@ -42,6 +46,7 @@ class Mail {
   Mail.fromMapObject(Map<String, dynamic> map) {
     this.id = map['id'];
     this.recepient = map['recepient'];
+    this.sender = map['sender'];
     this.body = map['body'];
     this.date = map['date'];
     this.subject = map['subject'];

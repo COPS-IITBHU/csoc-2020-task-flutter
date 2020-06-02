@@ -191,9 +191,9 @@ class _ProfleState extends State<PersonalProfile> {
       );
     }
     return CircleAvatar(
-      radius: 25.0,
+      radius: 75.0,
       child: FlutterLogo(
-        size: 50.0,
+        size: 100.0,
       ),
       backgroundColor: Colors.white,
     );

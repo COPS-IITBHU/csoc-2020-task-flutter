@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/email.dart';
 import '../database/database_helper.dart';
+import '../database/shared_preferences.dart';
 import 'dart:math' as math;
 
 class EmailCreate extends StatefulWidget {
@@ -12,23 +13,38 @@ class EmailCreate extends StatefulWidget {
 
 class _EmailCreate extends State<EmailCreate> {
   DatabaseHelper helper = DatabaseHelper();
+  SharedPreference profile1 = SharedPreference();
 
+  Mail _add = Mail(recepient: null, date: null, sender: null);
   final _formKey = GlobalKey<FormState>();
-  Mail _add = Mail(recepient: null, date: null);
 
   void formValidate() async {
     if (_formKey.currentState.validate()) {
       _add.body ??= ' ';
       _add.subject ??= ' ';
-      _add.favourite = 0;
-      _add.archive = 0;
-
-      var date = DateTime.now();
-      _add.date = '$date';
-
       await helper.insertMail(_add);
       Navigator.pop(context, true);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadMail();
+  }
+
+  void loadMail() async {
+    _add.favourite = 0;
+    _add.archive = 0;
+
+    var date = DateTime.now();
+    _add.date = '$date';
+
+    Profile _profile = Profile();
+    _profile = await profile1.getProfile();
+    setState(() {
+      _add.sender = _profile.emailId;
+    });
   }
 
   @override
@@ -66,6 +82,27 @@ class _EmailCreate extends State<EmailCreate> {
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
             children: <Widget>[
+              Text.rich(
+                TextSpan(
+                  text: "To ",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16.0,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "    ",
+                    ),
+                    TextSpan(
+                      text: _add.sender,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
@@ -77,10 +114,7 @@ class _EmailCreate extends State<EmailCreate> {
                     letterSpacing: 1.0,
                   ),
                   border: InputBorder.none,
-                  suffix: IconButton(
-                    icon: Icon(Icons.group_add),
-                    onPressed: () {},
-                  ),
+                  suffix: Icon(Icons.group_add),
                 ),
                 validator: (value) {
                   bool emailValid = RegExp(
@@ -106,7 +140,7 @@ class _EmailCreate extends State<EmailCreate> {
               Divider(
                 color: Colors.grey,
                 indent: 0,
-                thickness: 0.1,
+                thickness: 0.4,
                 height: 0.2,
               ),
               TextFormField(
@@ -126,7 +160,7 @@ class _EmailCreate extends State<EmailCreate> {
                 color: Colors.grey,
                 indent: 0,
                 thickness: 0.4,
-                height: 0.4,
+                height: 0.2,
               ),
               TextFormField(
                 keyboardType: TextInputType.multiline,

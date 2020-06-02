@@ -89,8 +89,12 @@ class _EmailDetailState extends State<EmailDetail> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15.0,
+                  vertical: 2.0,
+                ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     CircleAvatar(
                       backgroundColor: Colors.purple,
@@ -107,7 +111,20 @@ class _EmailDetailState extends State<EmailDetail> {
                         ),
                         subtitle: Row(
                           children: <Widget>[
-                            Text("to students.all"),
+                            Wrap(
+                              children: <Widget>[
+                                Text.rich(
+                                  TextSpan(
+                                    text: "to  ",
+                                    children: [
+                                      TextSpan(
+                                        text: _mail.sender,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                             IconButton(
                                 icon: Icon(Icons.arrow_drop_down),
                                 onPressed: () {
@@ -142,7 +159,7 @@ class _EmailDetailState extends State<EmailDetail> {
                         children: <Widget>[
                           Text.rich(
                             TextSpan(
-                              text: "From   ",
+                              text: "From  ",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15.0,
@@ -166,7 +183,7 @@ class _EmailDetailState extends State<EmailDetail> {
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: "students.all@itbhu.ac.in",
+                                    text: _mail.sender,
                                     style: TextStyle(
                                       color: Colors.black87,
                                     ),

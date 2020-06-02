@@ -10,7 +10,7 @@ class DatabaseHelper {
   static Database _database; // Singleton Database
 
   String emails = 'emailsTable';
-  String archive = 'archiveTable';
+  String colSender = 'sender';
   String colId = 'id';
   String colRecepient = 'recepient';
   String colBody = 'body';
@@ -47,9 +47,16 @@ class DatabaseHelper {
   }
 
   void _createDb(Database db, int newVersion) async {
-    await db.execute(
-        'CREATE TABLE $emails($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colRecepient TEXT, '
-        '$colBody TEXT, $colDate TEXT, $colSubject TEXT, $colFavourite INTEGER, $colArchived INTEGER)');
+    await db.execute("CREATE TABLE $emails ("
+        "$colId INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "$colRecepient TEXT, "
+        "$colSender TEXT, "
+        "$colBody TEXT, "
+        "$colDate TEXT, "
+        "$colSubject TEXT, "
+        "$colFavourite INTEGER, "
+        "$colArchived INTEGER "
+        ")");
   }
 
   Future<List<Map<String, dynamic>>> getEmailMapList() async {
