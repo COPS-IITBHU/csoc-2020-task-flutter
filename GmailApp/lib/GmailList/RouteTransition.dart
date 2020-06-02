@@ -4,12 +4,24 @@ class Transition extends PageRouteBuilder {
   final page;
   Transition({this.page})
       : super(
-          pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-              FadeTransition(
-            opacity: animation,
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(2, 0),
+              end: Offset.zero,
+            ).animate(animation),
             child: child,
           ),
-          transitionDuration: Duration(milliseconds: 400),
         );
 }
