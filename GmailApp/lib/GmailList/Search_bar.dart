@@ -56,37 +56,42 @@ class Searchbar extends SearchDelegate<Email> {
     final suggestions =
         search.where((searching) => searching[0].startsWith(query)).toList();
 
-    if (suggestions.isEmpty) {
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Image.asset('images/Noresult.jpg'),
-      );
+    if (query.isEmpty) {
+      return Container();
     } else {
-      return ListView.builder(
-          itemCount: suggestions.length,
-          itemBuilder: (context, index) => Container(
-                margin: EdgeInsets.only(top: 10),
-                child: ListTile(
-                    onTap: () {
-                      this.query = suggestions[index][0];
-                      navigatetodescription(this.query);
-                    },
-                    leading: CircleAvatar(
-                      backgroundColor: Color(int.parse(suggestions[index][1])),
-                      child: Text(
-                        suggestions[index][0][0].toUpperCase(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20,
-                            color: Colors.white),
+      if (suggestions.isEmpty) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Image.asset('images/Noresult.jpg'),
+        );
+      } else {
+        return ListView.builder(
+            itemCount: suggestions.length,
+            itemBuilder: (context, index) => Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: ListTile(
+                      onTap: () {
+                        this.query = suggestions[index][0];
+                        navigatetodescription(this.query);
+                      },
+                      leading: CircleAvatar(
+                        backgroundColor:
+                            Color(int.parse(suggestions[index][1])),
+                        child: Text(
+                          suggestions[index][0][0].toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Colors.white),
+                        ),
                       ),
-                    ),
-                    title: Text(
-                      suggestions[index][0],
-                      style: TextStyle(fontSize: 20),
-                    )),
-              ));
+                      title: Text(
+                        suggestions[index][0],
+                        style: TextStyle(fontSize: 20),
+                      )),
+                ));
+      }
     }
   }
 
@@ -102,35 +107,42 @@ class Searchbar extends SearchDelegate<Email> {
     }
 
     final suggestions =
-        search.where((searching) => searching[0].startsWith(query)).toList();
+        search.where((searching) => searching[0].contains(query)).toList();
 
     if (query.isEmpty) {
       return Container();
     } else {
-      return ListView.builder(
-          itemCount: suggestions.length,
-          itemBuilder: (context, index) => Container(
-                margin: EdgeInsets.only(top: 10),
-                child: ListTile(
-                    onTap: () {
-                      this.query = suggestions[index][0];
-                      navigatetodescription(this.query);
-                    },
-                    leading: CircleAvatar(
-                      backgroundColor: Color(int.parse(suggestions[index][1])),
-                      child: Text(
-                        suggestions[index][0][0].toUpperCase(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20,
-                            color: Colors.white),
+      if (suggestions.isEmpty) {
+        return Center(
+          child: Text("No Matching Email for '$query'"),
+        );
+      } else {
+        return ListView.builder(
+            itemCount: suggestions.length,
+            itemBuilder: (context, index) => Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: ListTile(
+                      onTap: () {
+                        this.query = suggestions[index][0];
+                        navigatetodescription(this.query);
+                      },
+                      leading: CircleAvatar(
+                        backgroundColor:
+                            Color(int.parse(suggestions[index][1])),
+                        child: Text(
+                          suggestions[index][0][0].toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Colors.white),
+                        ),
                       ),
-                    ),
-                    title: Text(
-                      suggestions[index][0],
-                      style: TextStyle(fontSize: 20),
-                    )),
-              ));
+                      title: Text(
+                        suggestions[index][0],
+                        style: TextStyle(fontSize: 20),
+                      )),
+                ));
+      }
     }
   }
 

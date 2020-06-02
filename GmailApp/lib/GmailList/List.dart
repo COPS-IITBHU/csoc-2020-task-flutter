@@ -23,6 +23,7 @@ class _Gmaillist extends State<Gmaillist> {
   Email email = Email('', '', '', '', '', 1, '');
   Databasehelper databasehelper = Databasehelper();
   List<Email> emaillist;
+  Email refemail = Email('', '', '', '', '', 1, '');
   int count = 0;
 
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
@@ -191,6 +192,7 @@ class _Gmaillist extends State<Gmaillist> {
                       InputDecoration.collapsed(hintText: "Search mail"),
                 ))),
         floatingActionButton: Container(
+          margin: EdgeInsets.only(bottom: 25),
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             tooltip: 'Compose Email',
@@ -221,12 +223,14 @@ class _Gmaillist extends State<Gmaillist> {
     if (result == 1) {
       updateemail();
     } else {
+      _deleteEmail(context, result);
       updateemail();
-      showsnackbar(context, 'Email deleted Successfully');
     }
   }
 
   void _deleteEmail(BuildContext context, Email email) async {
+    refemail = Email(email.sender, email.reciever, email.subject, email.compose,
+        email.date, email.star, email.color);
     int result = await databasehelper.deleteEmail(email.id);
     if (result != 0) {
       showsnackbar(context, 'Email deleted Successfully');
@@ -250,12 +254,24 @@ class _Gmaillist extends State<Gmaillist> {
     }
   }
 
+  void undo(Email email) async {
+    await databasehelper.insertEmail(email);
+    updateemail();
+  }
+
   void showsnackbar(BuildContext context, String message) {
-    final snackbar = SnackBar(
+    Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 1),
-    );
-    Scaffold.of(context).showSnackBar(snackbar);
+      duration: Duration(seconds: 2),
+      behavior: SnackBarBehavior.fixed,
+      action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+            undo(refemail);
+            refemail = Email('', '', '', '', '', 1, '');
+          }),
+    ));
   }
 
   void updateemail() {

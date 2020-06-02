@@ -56,7 +56,6 @@ class _Description extends State<Description> {
                       color: Colors.black,
                     ),
                     onPressed: () {
-                      _deleteEmail(context, this.email);
                       moveback(2);
                     }),
               ],
@@ -198,7 +197,7 @@ class _Description extends State<Description> {
     if (num == 1) {
       Navigator.pop(context, 1);
     } else {
-      Navigator.pop(context, 2);
+      Navigator.pop(context, this.email);
     }
   }
 
@@ -209,10 +208,6 @@ class _Description extends State<Description> {
     if (result == true) {
       moveback(1);
     }
-  }
-
-  void _deleteEmail(BuildContext context, Email email) async {
-    await databasehelper.deleteEmail(email.id);
   }
 
   int width = 0;
