@@ -84,14 +84,14 @@ class _EmailCreate extends State<EmailCreate> {
             children: <Widget>[
               Text.rich(
                 TextSpan(
-                  text: "To ",
+                  text: "From ",
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 16.0,
                   ),
                   children: [
                     TextSpan(
-                      text: "    ",
+                      text: "   ",
                     ),
                     TextSpan(
                       text: _add.sender,
@@ -107,7 +107,7 @@ class _EmailCreate extends State<EmailCreate> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: "From",
+                  hintText: "To",
                   hintStyle: TextStyle(color: Colors.grey),
                   errorStyle: TextStyle(
                     color: Colors.purple,

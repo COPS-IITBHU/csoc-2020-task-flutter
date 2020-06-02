@@ -114,9 +114,10 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         ? List<Mail>()
         : _mails
             .where((e) =>
-                e.subject.contains(query) ||
-                e.body.contains(query) ||
-                e.recepient.contains(query))
+                e.subject.toLowerCase().contains(query.toLowerCase()) ||
+                e.body.toLowerCase().contains(query.toLowerCase()) ||
+                e.recepient.toLowerCase().contains(query.toLowerCase()) ||
+                e.sender.toLowerCase().contains(query.toLowerCase()))
             .toList();
 
     if (suggestions.isNotEmpty) preference.setSuggestions(query);
