@@ -124,12 +124,21 @@ class _MailHomeListState extends State<MailHomeList> {
     backgroundImage: AssetImage('assets/images/avatar.jpg'),
   );
 
-  Widget _dismissibleBackground = Container(
+  Widget _dismissibleBackgroundL = Container(
     color: Colors.red,
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Icon(Icons.delete_outline),
+      ],
+    ),
+  );
+
+  Widget _dismissibleBackgroundR = Container(
+    color: Colors.red,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
         Icon(Icons.delete_outline),
       ],
     ),
@@ -138,7 +147,8 @@ class _MailHomeListState extends State<MailHomeList> {
   Widget _getTile(int index) {
     return Dismissible(
       key: Key(_mails[index].id.toString()),
-      background: _dismissibleBackground,
+      background: _dismissibleBackgroundL,
+      secondaryBackground: _dismissibleBackgroundR,
       child: ListTile(
         contentPadding: EdgeInsets.all(12.0),
         leading: _avatar,
